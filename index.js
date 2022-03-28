@@ -1,5 +1,5 @@
 const express=require('express')
-var port = process.env.PORT || 8000;
+const  port = process.env.port || 8000;
 const app=express();
 const router = express.Router();
 const  morgan = require("morgan");

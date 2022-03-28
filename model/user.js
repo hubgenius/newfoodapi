@@ -75,7 +75,7 @@ const examSchema = new mongoose.Schema({
         type:String
     },
     price:{
-        type:String
+        type:String,required:true
     },
     profile_url: { type: String }
 })
