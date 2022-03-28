@@ -18,8 +18,4 @@ app.use(bodyParser.urlencoded({ extended:false}));
 
 app.use('/',appRoutes);
 
-app.get('/', (req, res) => {
-    res.send("Working");
-})
-
 app.listen(PORT,()=>console.log("succsessfull", PORT));
