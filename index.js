@@ -16,7 +16,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:false}));
 
-
 app.use('/',appRoutes);
+
+app.get('/', (req, res) => {
+    res.send("Working");
+})
 
 app.listen(port,()=>console.log("succsessfull"));
