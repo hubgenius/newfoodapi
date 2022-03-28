@@ -1,4 +1,5 @@
 const express=require('express')
+var port = process.env.PORT || 8000;
 const app=express();
 const router = express.Router();
 const  morgan = require("morgan");
@@ -18,4 +19,4 @@ app.use(bodyParser.urlencoded({ extended:false}));
 
 app.use('/',appRoutes);
 
-app.listen(8000,()=>console.log("succsessfull"));
+app.listen(port,()=>console.log("succsessfull"));
