@@ -1,5 +1,5 @@
 const express=require('express')
-const  port = process.env.port || 8000;
+const PORT = process.env.PORT || 8080;
 const app=express();
 const router = express.Router();
 const  morgan = require("morgan");
@@ -22,4 +22,4 @@ app.get('/', (req, res) => {
     res.send("Working");
 })
 
-app.listen(port,()=>console.log("succsessfull"));
+app.listen(PORT,()=>console.log("succsessfull", PORT));
