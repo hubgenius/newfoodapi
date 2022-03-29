@@ -36,7 +36,7 @@ module.exports = function (router) {
                     data.quantities = req.body.quantities
                     data.price = req.body.price
                     data.profile_file = req.file.filename;
-                    data.profile_url = "https://unlimitedfood.herokuapp.com/upload" + req.file.filename;
+                    data.profile_url = "https://unlimitedfood.herokuapp.com/upload/" + req.file.filename;
                     data.save(function (err) {
                         if (err) {
                             console.log(err.errors.name);
