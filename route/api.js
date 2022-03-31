@@ -126,6 +126,26 @@ module.exports = function (router) {
 
 
     });
+    router.put('/forget', function (req, res) {
+        Exam.findOne({ email: req.body.email }, function (err, user) {
+            if (err) throw err;
+            if (user) {
+                res.json({ success: false, message: 'No user found' });
+            } else {
+                // user.username=req.body.username
+                // user.email=req.body.email
+                user.password = req.body.password
+                // user.phonenumber=req.body.phonenumber
+                user.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.json({ success: true, message: 'Details has been updated!' });
+                    }
+                });
+            }
+        });
+    })
     router.post('/login', function (req, res) {
         New.findOne({ email: req.body.email }).select('email password').exec(function (err, user) {
             if (err) throw err;
@@ -139,11 +159,36 @@ module.exports = function (router) {
                         var validPassword = user.comparePassword(req.body.password);
                         if (!validPassword) {
                             res.json({ success: false, message: 'Could not authenticate password' });
-                        } else{
-                        // res.send(user);
-                        var token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '24h' });
-                        res.json({ success: true, message: 'User authenticated!', token: token });
+                        } else {
+                            // res.send(user);
+                            var token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '24h' });
+                            res.json({ success: true, message: 'User authenticated!', token: token });
+                        }
                     }
+                }
+            }
+        });
+    });
+    
+    router.post('/otp', function (req, res) {
+        console.log("errorr", req.body)
+        New.findOne({ phone: req.body.phone }).select('phone password').exec(function (err, user) {
+            if (err) throw err;
+            else {
+                if (!user) {
+                    res.json({ success: false, message: 'phone and password not provided !!!' });
+                } else if (user) {
+                    if (!req.body.password) {
+                        res.json({ success: false, message: 'No password provided' });
+                    } else {
+                        var validPassword = user.comparePassword(req.body.password);
+                        if (!validPassword) {
+                            res.json({ success: false, message: 'Could not authenticate password' });
+                        } else {
+                            // res.send(user);
+                            var token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '24h' });
+                            res.json({ success: true, message: 'User authenticated!', token: token });
+                        }
                     }
                 }
             }
