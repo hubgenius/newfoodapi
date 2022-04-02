@@ -127,7 +127,7 @@ module.exports = function (router) {
 
     });
     router.put('/forget', function (req, res) {
-        Exam.findOne({ email: req.body.email }).exec(function (err, user) {
+        New.findOne({ email: req.body.email }).exec(function (err, user) {
             if (err) throw err;
             if (req.body.password == null || req.body.password == '') {
                 res.json({ success: false, message: 'Password not provided' });
@@ -231,26 +231,27 @@ module.exports = function (router) {
     //         }
     //     });
     // });
-    router.put('/forget', function (req, res) {
-        Exam.findOne({ email: req.body.email }, function (err, user) {
-            if (err) throw err;
-            if (user) {
-                res.json({ success: false, message: 'No user found' });
-            } else {
-                // user.username=req.body.username
-                // user.email=req.body.email
-                user.password = req.body.password
-                // user.phonenumber=req.body.phonenumber
-                user.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        res.json({ success: true, message: 'Details has been updated!' });
-                    }
-                });
-            }
-        });
-    })
+    // router.put('/forget', function (req, res) {
+    //     Exam.findOne({ email: req.body.email }, function (err, user) {
+    //         if (err) throw err;
+    //         if (user) {
+    //             res.json({ success: false, message: 'No user found' });
+    //         } else {
+    //             // user.username=req.body.username
+    //             // user.email=req.body.email
+    //             user.password = req.body.password
+    //             // user.phonenumber=req.body.phonenumber
+    //             user.save(function (err) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                 } else {
+    //                     res.json({ success: true, message: 'Details has been updated!' });
+    //                 }
+    //             });
+    //         }
+    //     });
+    // })
+    
     router.use(function (req, res, next) {
 
         var token = req.body.token || req.body.query || req.headers['x-access-token'];
