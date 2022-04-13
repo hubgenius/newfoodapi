@@ -8,13 +8,17 @@ const cors=require("cors")
 //     origin: '*'
 // }
 
+
 const bodyParser = require('body-parser');
 const appRoutes = require("./route/api")(router);
+
+
 app.use('/upload',express.static('uploads'));
 
 const mongoose = require('mongoose')
 const DB ="mongodb+srv://mern:kju5566@cluster0.ql0e8.mongodb.net/genius?retryWrites=true&w=majority";
 mongoose.connect(DB)
+
 app.use(morgan('dev'));
 // app.use(cors(corsOptions));
 app.use(cors())

@@ -55,6 +55,7 @@ const newSchema = new mongoose.Schema({
     },
     email:{
         type:String,
+        unique:true,
         // required: true, lowercase:true, unique: true, validate: emailValidator
     },
     phone:{
