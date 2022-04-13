@@ -25,14 +25,14 @@ module.exports = function (router) {
             audience: CLIENT_ID
         });
         const { name, email, picture } = ticket.getPayload();
-        New.find({email:email}).exec(function(err,user){
-            if(user && user.length!= 0){
+        New.find({ email: email }).exec(function (err, user) {
+            if (user && user.length != 0) {
                 console.log(user)
                 var token1 = jwt.sign({ email: email }, secret, { expiresIn: '24h' });
-                res.json({ success: true, message: 'User authenticated!', token: token1,email:email });
+                res.json({ success: true, message: 'User authenticated!', token: token1, email: email });
 
             }
-            else{
+            else {
                 let mouse = new New()
                 mouse.username = name;
                 mouse.email = email;
@@ -40,21 +40,21 @@ module.exports = function (router) {
                 console.log(name);
                 console.log(email);
                 console.log(picture)
-        
+
                 mouse.save((err) => {
                     if (err) {
                         console.log(err)
                     } else {
                         var token1 = jwt.sign({ email: email }, secret, { expiresIn: '24h' });
                         res.json({ success: true, message: 'User authenticated!', token: token1 });
-        
+
                     }
                 })
-        
+
 
             }
         })
-        
+
     })
 
     router.post('/', (req, res) => {
@@ -84,7 +84,7 @@ module.exports = function (router) {
                     data.quantities = req.body.quantities
                     data.price = req.body.price
                     data.profile_file = req.file.filename;
-                    data.profile_url = "https://unlimitedfood.herokuapp.com/upload/" + req.file.filename;
+                    data.profile_url = "http://localhost:8080/upload/" + req.file.filename;
                     data.save(function (err) {
                         if (err) {
                             console.log(err.errors.name);
@@ -141,7 +141,7 @@ module.exports = function (router) {
             if (!req.file) {
                 res.json({ success: false, message: 'No file selected !!!' });
             } else {
-                let data =  new New()
+                let data = new New()
                 // data.name=req.body.name;
                 data.password = req.body.password;
                 data.email = req.body.email;
@@ -151,20 +151,20 @@ module.exports = function (router) {
                 // data.quantities = req.body.quantities
                 // data.price=req.body.price
                 data.profile_file = req.file.filename;
-                data.profile_url = "https://unlimitedfood.herokuapp.com/upload/" + req.file.filename;
+                data.profile_url = "http://localhost:8080/upload/" + req.file.filename;
                 data.save()
-                    if (err) {
-                        console.log(err.errors.username);
-                        if (err.errors.username) {
-                            res.json({ success: false, message: "Name is required" });
-                        }
-                        else {
-                            res.json({ success: false, message: err });
-                        }
-                    } else {
-                        res.json({ success: true, message: 'Registration Successfully' });
+                if (err) {
+                    console.log(err.errors.username);
+                    if (err.errors.username) {
+                        res.json({ success: false, message: "Name is required" });
                     }
-              
+                    else {
+                        res.json({ success: false, message: err });
+                    }
+                } else {
+                    res.json({ success: true, message: 'Registration Successfully' });
+                }
+
             }
             // }
             // })
@@ -191,7 +191,7 @@ module.exports = function (router) {
             }
         });
     });
-    
+
 
     router.post('/login', function (req, res) {
         New.findOne({ email: req.body.email }).select('email  password').exec(function (err, user) {
@@ -300,7 +300,7 @@ module.exports = function (router) {
     });
     router.get('/', async (req, res) => {
         // console.log("deedddcode", req.decoded)
-        New.find({email:req.body.email}).exec(function (err, user) {
+        New.find({ email: req.body.email }).exec(function (err, user) {
             if (err) throw err;
             if (user) {
                 res.json({ success: false, message: 'User not found' });
@@ -376,9 +376,9 @@ module.exports = function (router) {
             res.json({ success: false, message: 'No token provided' });
         }
     });
-    
+
     router.get('/loginwithgoogle', async (req, res) => {
-        New.find({email:req.decoded.email}).exec(function(err,user){
+        New.find({ email: req.decoded.email }).exec(function (err, user) {
             if (err) throw err;
             if (!user) {
                 res.json({ success: false, message: 'User not found' });
@@ -447,7 +447,7 @@ module.exports = function (router) {
                 // result.password = req.body.password
                 data.phone = req.body.phone
                 data.profile_file = req.file.filename;
-                data.profile_url = "https://unlimitedfood.herokuapp.com/upload/" + req.file.filename;
+                data.profile_url = "http://localhost:8000/upload/" + req.file.filename;
                 data.save(function (err) {
                     if (err) {
                         console.log(err);
@@ -499,7 +499,7 @@ module.exports = function (router) {
                 data.quantities = req.body.quantities
                 data.price = req.body.price
                 data.profile_file = req.file.filename;
-                data.profile_url = "https://unlimitedfood.herokuapp.com//upload/" + req.file.filename;
+                data.profile_url = "http://localhost:8000/upload/" + req.file.filename;
                 data.save(function (err) {
                     if (err) {
                         console.log(err);
