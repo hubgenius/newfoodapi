@@ -58,52 +58,7 @@ module.exports = function (router) {
 
     })
 
-    router.post('/', (req, res) => {
-        upload(req, res, function (err) {
-            console.log("req.file---", req.file);
-            console.log("req.body", req.body)
-            if (err) {
-                if (err.code === 'LIMIT_FILE_SIZE') {
-                    res.json({ success: false, message: 'Profile Image too large !!!' });
-                } else if (err.code === 'filetype') {
-                    res.json({ success: false, message: 'Invaild : Only jpeg, jpg and png supported !!!' });
-                } else {
-                    console.log(err);
-                    res.json({ success: false, message: 'Profile Image not upload !!!' });
-                }
-            } else {
-                if (!req.file) {
-                    res.json({ success: false, message: 'No file selected !!!' });
-                } else {
-                    let data = new Exam()
-                    data.name = req.body.name;
-                    // data.password=req.body.password;
-                    // data.email=req.body.email;
-                    // data.phone=req.body.phone;
-                    // data.username = req.body.username
-                    data.description = req.body.description
-                    data.quantities = req.body.quantities
-                    data.price = req.body.price
-                    data.profile_file = req.file.filename;
-                    data.profile_url = "http://localhost:8080/upload/" + req.file.filename;
-                    data.save(function (err) {
-                        if (err) {
-                            console.log(err.errors.name);
-                            if (err.errors.name) {
-                                res.json({ success: false, message: "Name is required" });
-                            }
-                            else {
-                                res.json({ success: false, message: err });
-                            }
-                        } else {
-                            res.json({ success: true, message: 'Registration Successfully' });
-                        }
-                    });
-                }
-            }
-        })
-
-    })
+  
     router.get('/food', async (req, res) => {
         // console.log("deedddcode", req.decoded)
         Exam.find({}).exec(function (err, user) {
@@ -353,6 +308,7 @@ module.exports = function (router) {
     //         }
     //     });
     // });
+
     // router.put('/forget', function (req, res) {
     //     Exam.findOne({ email: req.body.email }, function (err, user) {
     //         if (err) throw err;
@@ -402,7 +358,52 @@ module.exports = function (router) {
             }
         })
     });
+    router.post('/', (req, res) => {
+        upload(req, res, function (err) {
+            console.log("req.file---", req.file);
+            console.log("req.body", req.body)
+            if (err) {
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    res.json({ success: false, message: 'Profile Image too large !!!' });
+                } else if (err.code === 'filetype') {
+                    res.json({ success: false, message: 'Invaild : Only jpeg, jpg and png supported !!!' });
+                } else {
+                    console.log(err);
+                    res.json({ success: false, message: 'Profile Image not upload !!!' });
+                }
+            } else {
+                if (!req.file) {
+                    res.json({ success: false, message: 'No file selected !!!' });
+                } else {
+                    let data = new Exam()
+                    data.name = req.body.name;
+                    // data.password=req.body.password;
+                    // data.email=req.body.email;
+                    // data.phone=req.body.phone;
+                    // data.username = req.body.username
+                    data.description = req.body.description
+                    data.quantities = req.body.quantities
+                    data.price = req.body.price
+                    data.profile_file = req.file.filename;
+                    data.profile_url = "http://localhost:8080/upload/" + req.file.filename;
+                    data.save(function (err) {
+                        if (err) {
+                            console.log(err.errors.name);
+                            if (err.errors.name) {
+                                res.json({ success: false, message: "Name is required" });
+                            }
+                            else {
+                                res.json({ success: false, message: err });
+                            }
+                        } else {
+                            res.json({ success: true, message: 'Registration Successfully' });
+                        }
+                    });
+                }
+            }
+        })
 
+    })
     // router.get('/', function(req, res) { 
     //     console.log("req.decoded",req.decoded)
     //     New.find({}.exec (function(err, user) {
