@@ -24,7 +24,7 @@ module.exports = function (router) {
             idToken: token,
             audience: CLIENT_ID
         });
-        const { name, email, picture } = ticket.getPayload();
+        const { name, email, picture ,phone} = ticket.getPayload();
         New.find({ email: email }).exec(function (err, user) {
             if (user && user.length != 0) {
                 console.log(user)
@@ -36,7 +36,8 @@ module.exports = function (router) {
                 let mouse = new New()
                 mouse.username = name;
                 mouse.email = email;
-                mouse.profile_file = picture;
+                mouse.profile_url = picture;
+                mouse.phone=phone;
                 console.log(name);
                 console.log(email);
                 console.log(picture)
@@ -138,8 +139,14 @@ module.exports = function (router) {
             //         res.json({ success: false, message: 'Profile Image not upload !!!' });
             //     }
             // } else {
-            if (!req.file) {
-                res.json({ success: false, message: 'No file selected !!!' });
+            if (req.file==null) {
+                let data = new New()
+                data.password = req.body.password;
+                data.email = req.body.email;
+                data.phone = req.body.phone;
+                data.username = req.body.username
+                data.save()
+                res.json({ success: true, message: 'No file selected !!!' });
             } else {
                 let data = new New()
                 // data.name=req.body.name;
@@ -174,6 +181,7 @@ module.exports = function (router) {
 
     });
     router.put('/forget', function (req, res) {
+    
         New.findOne({ email: req.body.email }).exec(function (err, user) {
             if (err) throw err;
             if (req.body.password == null || req.body.password == '') {
@@ -221,6 +229,46 @@ module.exports = function (router) {
 
     //     res.send('hello from simple server :)')
     // })
+    
+    router.post('/otp', function (req, res) {
+        New.findOne({
+            phone: req.body.phone
+        }).select('mobilenumber password').exec(function (err, user) {
+            if (err) throw err;
+            else {
+                if (!user) {
+                    res.json({ success: false, message: 'mobilenumber and password not provided !!!' });
+                } else if (user) {
+                    if (!req.body.password) {
+                        res.json({ success: false, message: 'No password provided' });
+                    } else {
+                        var validPassword = user.comparePassword(req.body.password);
+                        if (!validPassword) {
+                            res.json({ success: false, message: 'Please Enter Right Password' });
+                        } else {
+                            console.log("sss", user.mobilenumber)
+                            // res.send(user);
+                            // var token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '1h' });
+                            client
+                                .verify
+                                .services(config.serviceID)
+                                .verifications
+                                .create({
+                                    to: `+91${req.body.phone}`,
+                                    channel: 'sms'
+                                }).then((data) => {
+                                    res.status(200).json({ data: data })
+                                }).catch((err)=>{
+                                    console.log(err)
+                                })
+                            res.json({ success: true, message: 'User authenticated!' });
+                        }
+                    }
+                }
+            }
+        });
+    })
+    
     router.post('/verify', (req, res) => {
         New.findOne({
             phone: req.body.phone,
@@ -264,40 +312,6 @@ module.exports = function (router) {
             })
     })
 
-    router.post('/otp', function (req, res) {
-        console.log("errorr", req.body)
-        New.findOne({ phone: req.body.phone }).select('phone password').exec(function (err, user) {
-            if (err) throw err;
-            else {
-                if (!user) {
-                    res.json({ success: false, message: 'phone and password not provided !!!' });
-                } else if (user) {
-                    if (!req.body.password) {
-                        res.json({ success: false, message: 'No password provided' });
-                    } else {
-                        var validPassword = user.comparePassword(req.body.password);
-                        if (!validPassword) {
-                            res.json({ success: false, message: 'Could not authenticate password' });
-                        } else {
-                            client
-                                .verify
-                                .services(config.serviceID)
-                                .verifications
-                                .create({
-                                    to: `+91${req.body.phone}`,
-                                    channel: 'sms'
-                                }).then((data) => {
-                                    res.status(200).json({ data: data })
-                                })
-                            // res.send(user);
-                            // var token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: '24h' });
-                            res.json({ success: true, message: 'User authenticated!', });
-                        }
-                    }
-                }
-            }
-        });
-    });
     router.get('/', async (req, res) => {
         // console.log("deedddcode", req.decoded)
         New.find({ email: req.body.email }).exec(function (err, user) {
